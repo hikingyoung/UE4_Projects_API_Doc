@@ -1,0 +1,18 @@
+# 通信
+### 事件监听法
+   + 由UE端挂server.js服务，pad端作为client接入
+   ![Sample](https://github.com/hikingyoung/SheSpunStrawIntoGoldThread/blob/master/KepkFS7QIR.png?raw=true)
+   + 该server.js负责对clent定义的事件进行监听，同时负责将监听到的数据通过ipc组件中转到UE。所以真正使用的时候，和前端之间沟通：
+      - 当需要发送命令时，前端设计相应的事件，相应的事件监听代码添加到server.js中
+      - server在监听client事件的代码中调用ipc,将相应的数据传给UE4端
+      - UE4端要监听ipc组件的事件需要提前绑定——Node->BindEvent;
+      ![在蓝图里预告绑定要监听的事件](D:/0.png)
+
+      - UE4监听到后会调用OnEvent(Node)来判断，因此不建议监听的事件过多
+
+   + 使用这种方法时要清楚如下几点：
+      - Websocket组件只对S/C通信负责
+      - ipc组件只对S/ue4之间通信负责，并且ipc发挥作用不需要有Client连接成功
+
+### UE全局接入法
+1. <font color = lightblue>原理</font></br>
